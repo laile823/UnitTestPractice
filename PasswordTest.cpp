@@ -14,6 +14,10 @@ class PracticeTest : public ::testing::Test
 		virtual void TearDown(){} //clean up after each test, (before destructor)
 };
 
+bool has_mixed_case(string x){
+	Password my_password;
+}
+
 TEST(PasswordTest, single_letter_password)
 {
 	Password my_password;
@@ -21,19 +25,10 @@ TEST(PasswordTest, single_letter_password)
 	ASSERT_EQ(1, actual);
 }
 
-TEST_EMPTY_STRING(PasswordTest, two_letter_password)
-{
-	Password my_password;
-	int actual = my_password.count_leading_characters("");
-
-	ASSERT_EQ(0, actual);
+TEST(PasswordTest, MixedCaseTest) {
+    ASSERT_TRUE(has_mixed_case("aA")); // Should return true
+    ASSERT_FALSE(has_mixed_case("aaa")); // Should return false;
 }
 
 
-TEST_SPACE(PasswordTest, two_letter_password)
-{
-	Password my_password;
-	int actual = my_password.count_leading_characters(" ");
 
-	ASSERT_EQ(0, actual);
-}
