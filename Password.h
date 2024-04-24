@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <cctype>
+#include <algorithm>
 
 using std::string;
 using std::vector;
@@ -18,18 +20,31 @@ public:
   end of the string). The function is case-sensitive so 'Z' is different than
   'z' and any ASCII characters are allowed.
   */
-  int count_leading_characters(string);
+int count_leading_characters(string phrase);
+
 
   /*
   returns whether the phrase has both at least one upper-case letter and
   at least one lower-case letter
   */
-  bool has_mixed_case(string);
+bool has_mixed_case(string phrase) {
+    bool has_upper = false, has_lower = false;
+    for (char c : phrase) {
+        if (isupper(c)) has_upper = true;
+        if (islower(c)) has_lower = true;
+        if (has_upper && has_lower) return true;
+    }
+    return false;
+}
+
 
   /*
   constructor sets the default password to "ChicoCA-95929"
   */
-  Password();
+Password() {
+    pass_history.push_back("ChicoCA-95929");
+}
+
 
   /*
   receives a password and sets the latest in pass_history to it if and only
@@ -39,13 +54,25 @@ public:
     3. It has mixed case (at least one upper case and at least one lower case)
     4. It was not a previous password in the history
   */
-  void set(string);
+ void set(string new_password) {
+    if (new_password.length() < 8 || new_password.length() > 20) return;
+    if (count_leading_characters(new_password) > 3) return;
+    if (!has_mixed_case(new_password)) return;
+    if (std::find(pass_history.begin(), pass_history.end(), new_password) != pass_history.end()) return;
+
+    pass_history.push_back(new_password);
+}
+
 
   /*
   receives a string and authenticates it against the latest password in the
   pass_history, returning true for an exact match or false when it does not match
   or if a password has not been set.
   */
-  bool authenticate(string);
+bool authenticate(string attempt) {
+    if (pass_history.empty()) return false;
+    return attempt == pass_history.back();
+}
+
 };
 #endif
